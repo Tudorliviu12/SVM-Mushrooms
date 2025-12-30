@@ -8,25 +8,23 @@ def rbf_kernel(X1, X2, gamma=0.1):
     sq_dists = np.sum(X1 ** 2, axis=1).reshape(-1, 1) + np.sum(X2 ** 2, axis=1) - 2 * np.dot(X1, X2.T)
     return np.exp(-gamma * sq_dists)
 
-
 def main():
     X_train, X_test, y_train, y_test = load_process_data()
 
     X_train = X_train[:300]
     y_train = y_train[:300]
 
-    # 2. Configuram parametrii
     C = 1.0
     gamma = 0.1
     pop_size = 40
     generations = 50
 
-    print("Calculam Matricea Kernel...")
+    print("Matricea Kernel")
     K = rbf_kernel(X_train, X_train, gamma)
 
     ga = SVM_GA(X_train, y_train, C=C, pop_size=pop_size)
 
-    print(f"Incepem evolutia pentru {generations} generatii...")
+    print(f"Incepem evolutia pentru {generations} generatii\n")
 
     pop = [ga.repair(np.random.uniform(0, C, len(y_train))) for _ in range(pop_size)]
 
@@ -62,12 +60,12 @@ def main():
     else:
         b = 0
 
-    print("\nEvaluare pe setul de test...")
+    print("\nEvaluare pe setul de test\n")
     K_test = rbf_kernel(X_test, X_train, gamma)
     y_pred = np.sign(np.dot(K_test, best_alpha * y_train) + b)
 
     acc = accuracy_score(y_test, y_pred)
-    print(f"Acuratete finala: {acc * 100:.2f}%")
+    print(f"Acuratete finala: {acc * 100:.2f}%\n")
 
 
 if __name__ == "__main__":

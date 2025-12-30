@@ -17,13 +17,16 @@ class SVM_GA:
         return term1 - term2
 
     def repair(self, alpha):
-        current_sum = np.sum(alpha * self.y)
+        for _ in range(10):
+            alpha = np.clip(alpha, 0, self.C)
+            current_sum = np.sum(alpha * self.y)
+            if abs(current_sum) < 0.001:
+                break
+            idx = random.randint(0, self.n_samples - 1)
+            correction = current_sum/self.y[idx]
+            alpha[idx] = alpha[idx] - correction
 
-        idx = random.randint(0, self.n_samples - 1)
-        correction = current_sum / self.y[idx]
-        alpha[idx] -= correction
-
-        return np.clip(alpha, 0, self.C)
+        return alpha
 
     def crossover(self, p1, p2):
         gamma = random.random()
